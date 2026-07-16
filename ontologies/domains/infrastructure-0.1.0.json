@@ -1,0 +1,21 @@
+{
+  "version": "infrastructure-0.1.0",
+  "types": [
+    "Host", "Process", "Service", "Container", "Image", "Cluster", "Node", "Pod",
+    "Deployment", "ReplicaSet", "Network", "Route", "Volume", "Certificate", "Alert",
+    "Request", "Dependency", "State", "Action", "Observation"
+  ],
+  "required_attributes": {
+    "Cluster": ["name"], "Node": ["name", "schedulable"], "Pod": ["name", "phase"],
+    "Deployment": ["name", "replicas"], "Service": ["name"], "Route": ["active"]
+  },
+  "relations": {
+    "part_of": {"domains": ["Node", "Pod", "Deployment", "Service", "Route"], "ranges": ["Cluster"]},
+    "scheduled_on": {"domains": ["Pod"], "ranges": ["Node"]},
+    "managed_by": {"domains": ["Pod", "ReplicaSet"], "ranges": ["ReplicaSet", "Deployment"]},
+    "selects": {"domains": ["Service"], "ranges": ["Pod", "Deployment"]},
+    "routes_to": {"domains": ["Route", "Service"], "ranges": ["Service", "Pod"]},
+    "depends_on": {"domains": ["Service", "Deployment", "Pod"], "ranges": ["Service", "Route", "Volume", "Certificate"]},
+    "has_state": {"domains": ["Host", "Process", "Service", "Container", "Cluster", "Node", "Pod", "Deployment", "Route"], "ranges": ["State"]}
+  }
+}

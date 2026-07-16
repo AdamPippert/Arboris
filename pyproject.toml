@@ -7,7 +7,7 @@ name = "arboris"
 version = "0.0.1"
 description = "Arboris — graph-based dendritic model, an alternative approach to world models"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Adam Pippert", email = "adam.pippert@gmail.com" }]
@@ -15,11 +15,24 @@ keywords = ["world-models", "graph-neural-network", "dendritic", "representation
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-dependencies = []
+dependencies = [
+    "kuzu>=0.11,<1",
+    "numpy>=2,<3",
+    "pyarrow>=20,<22",
+    "pydantic>=2.11,<3",
+    "pyyaml>=6,<7",
+    "typer>=0.16,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4,<9", "ruff>=0.12,<1"]
+model = ["torch>=2.7,<3"]
+
+[project.scripts]
+arboris = "arboris.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/AdamPippert/Arboris"
@@ -32,3 +45,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

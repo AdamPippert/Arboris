@@ -18,12 +18,30 @@ structure of an environment more faithfully.
 
 This is a research direction, not a finished result. Expect the design to change.
 
-## Layout
+## Implemented foundation
 
+The first migration stage provides canonical Pydantic graph/provenance records,
+deterministic graph differencing and rollback, versioned upper and infrastructure
+ontology documents, executable domain/range and integrity validation, and an
+`arboris ontology validate` CLI. Dendritic computation, prediction, arbitration,
+simulation, training, and model weights are not implemented yet.
+
+Development setup and checks:
+
+```bash
+uv sync --extra dev
+.venv/bin/pytest
+.venv/bin/ruff check .
+.venv/bin/arboris ontology validate \
+  --ontology ontologies/domains/infrastructure-0.1.0.json --json
 ```
-src/arboris/     library code (architecture, training, eval) — WIP
-LICENSE, NOTICE  Apache-2.0
-```
+
+Install the `model` extra only when working on neural stages, using a PyTorch source
+appropriate for the host's CPU or CUDA platform.
+
+See [`docs/repository_assessment.md`](docs/repository_assessment.md) and
+[`docs/migration_plan.md`](docs/migration_plan.md) for the audited baseline, gap
+analysis, decisions, target tree, and staged experiment plan.
 
 ## Partnership
 

@@ -1,0 +1,35 @@
+{
+  "version": "upper-0.1.0",
+  "types": [
+    "Entity", "Agent", "Object", "System", "Component", "Event", "State",
+    "Action", "Process", "Place", "Time", "Quantity", "Observation", "Goal",
+    "Claim", "Hypothesis", "Prediction", "Constraint", "Resource", "Capability"
+  ],
+  "required_attributes": {},
+  "relations": {
+    "is_a": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "part_of": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "contains": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "located_in": {"domains": ["Entity"], "ranges": ["Place", "Entity"]},
+    "participates_in": {"domains": ["Entity"], "ranges": ["Event", "Process"]},
+    "acts_on": {"domains": ["Action", "Agent"], "ranges": ["Entity"]},
+    "causes": {"domains": ["Event", "Action", "State"], "ranges": ["Event", "State"]},
+    "enables": {"domains": ["Entity", "State"], "ranges": ["Action", "Process", "State"]},
+    "prevents": {"domains": ["Entity", "State"], "ranges": ["Action", "Process", "State"]},
+    "precedes": {"domains": ["Event", "Action", "State"], "ranges": ["Event", "Action", "State"]},
+    "follows": {"domains": ["Event", "Action", "State"], "ranges": ["Event", "Action", "State"]},
+    "depends_on": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "supports": {"domains": ["Entity", "Claim"], "ranges": ["Entity", "Claim"]},
+    "contradicts": {"domains": ["Claim", "Observation", "State"], "ranges": ["Claim", "Observation", "State"]},
+    "observes": {"domains": ["Agent", "Observation"], "ranges": ["Entity", "Event", "State"]},
+    "has_state": {"domains": ["Entity"], "ranges": ["State"]},
+    "transforms_into": {"domains": ["Entity", "State"], "ranges": ["Entity", "State"]},
+    "owns": {"domains": ["Agent", "System"], "ranges": ["Entity"]},
+    "controls": {"domains": ["Agent", "System"], "ranges": ["Entity"]},
+    "connected_to": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "communicates_with": {"domains": ["Entity"], "ranges": ["Entity"]},
+    "requires": {"domains": ["Entity", "Action", "Process"], "ranges": ["Entity", "State", "Resource"]},
+    "produces": {"domains": ["Entity", "Process"], "ranges": ["Entity", "Resource"]},
+    "consumes": {"domains": ["Entity", "Process"], "ranges": ["Entity", "Resource"]}
+  }
+}
