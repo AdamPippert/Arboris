@@ -1,0 +1,26 @@
+{
+  "skill_name": "ontology-testbed",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to know how the ontology testbed baselines perform. Run the benchmark for both builtin baselines on the dev split and summarize hits@1 and MRR for each, plus which categories the degree baseline struggles on and why that might be.",
+      "expected_output": "A summary with random ~0.158/0.316 and degree ~0.474/0.618 (hits@1/MRR) on dev, noting weak categories (general, food) for degree.",
+      "files": [],
+      "assertions": [
+        "summary reports both baselines' dev hits@1 and MRR matching the deterministic harness values",
+        "identifies at least one weak category for the degree baseline"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Write a new experimental implementation for the Arboris ontology testbed called NamePrior: score a candidate edge higher when a relation between same-named entity types exists in any training fixture, falling back to degree-style scoring otherwise. Evaluate it on the dev split against the builtin baselines.",
+      "expected_output": "A name_prior.py adapter conforming to the fit/score_edge protocol, run via evaluate.py --impl, with a three-way dev-split comparison.",
+      "files": [],
+      "assertions": [
+        "adapter defines a no-arg-constructible class with fit and score_edge",
+        "adapter was executed through evaluate.py --impl module:Class",
+        "comparison includes all three implementations with hits@1 and MRR"
+      ]
+    }
+  ]
+}
