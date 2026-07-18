@@ -74,6 +74,10 @@ flowchart TD
 
 ```
 src/arboris/       library code (architecture, training, eval) — WIP scaffold
+.claude/skills/
+  ontology-testbed/    benchmark harness: evaluate Arboris implementations on
+                       masked-relation prediction over Microsoft's
+                       Ontology-Playground catalogue (71 real ontologies)
 docs/              design documents and diagrams
   architecture.md      components and the dendritic mechanism
   data-pipeline.md     how raw data becomes the open training dataset
