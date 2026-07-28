@@ -21,6 +21,17 @@
         "adapter was executed through evaluate.py --impl module:Class",
         "comparison includes all three implementations with hits@1 and MRR"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add schema.org to the ontology testbed corpus, rebuild the fixtures, and tell me how the corpus and the degree baseline's test numbers change compared to playground-only.",
+      "expected_output": "Runs schemaorg_fixtures.py then build_fixtures.py; reports ~143 total fixtures (train grows to ~125), a handful of schemaorg eval tasks, and compares degree test hits@1/MRR before/after.",
+      "files": [],
+      "assertions": [
+        "schemaorg_fixtures.py and build_fixtures.py were both run",
+        "reports the merged fixture/split counts from the manifest",
+        "notes that subTypeOf edges are context-only (not masked) or that schema.org mainly enriches training"
+      ]
     }
   ]
 }

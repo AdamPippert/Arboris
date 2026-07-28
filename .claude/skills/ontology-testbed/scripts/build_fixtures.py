@@ -89,13 +89,16 @@ def make_tasks(fixture: dict, n_distractors: int) -> list[dict]:
     """Mask a deterministic subset of edges; build ranking candidates for each."""
     graph = fixture["graph"]
     edges = graph["edges"]
-    if len(edges) < MIN_EDGES_TO_MASK:
+    # only edges marked maskable (default true) are eval targets; e.g. schema.org
+    # subTypeOf edges stay in the graph as context but are never masked
+    maskable_idx = [i for i, e in enumerate(edges) if e.get("maskable", True)]
+    if len(maskable_idx) < MIN_EDGES_TO_MASK:
         return []
     rng = random.Random(stable_hash("arboris-mask:" + fixture["id"]))
-    n_mask = max(1, round(len(edges) * MASK_FRACTION))
-    masked_idx = sorted(rng.sample(range(len(edges)), n_mask))
-    masked = [edges[i] for i in masked_idx]
-    kept = [e for i, e in enumerate(edges) if i not in set(masked_idx)]
+    n_mask = max(1, round(len(maskable_idx) * MASK_FRACTION))
+    masked_idx = set(rng.sample(maskable_idx, n_mask))
+    masked = [edges[i] for i in sorted(masked_idx)]
+    kept = [e for i, e in enumerate(edges) if i not in masked_idx]
 
     node_ids = [n["id"] for n in graph["nodes"]]
     true_pairs = {(e["source"], e["target"]) for e in edges}
@@ -151,12 +154,25 @@ def main() -> int:
             continue
         fixtures.append(fx)
 
+    # merge fixtures from additional sources (e.g. schemaorg_fixtures.py);
+    # each extra-fixtures-*.json is a list of fixture dicts in the same shape
+    extra_counts = {}
+    for extra_path in sorted(args.dir.glob("extra-fixtures-*.json")):
+        extra = json.loads(extra_path.read_text())
+        known = {fx["id"] for fx in fixtures}
+        added = [fx for fx in extra if fx["id"] not in known and len(fx["graph"]["nodes"]) >= 2]
+        fixtures.extend(added)
+        extra_counts[extra_path.name] = len(added)
+
     splits: dict[str, str] = {}
     tasks: dict[str, list[dict]] = {"dev": [], "test": []}
     for fx in fixtures:
-        split = assign_split(fx["id"])
-        if split != "train" and len(fx["graph"]["edges"]) < MIN_EDGES_TO_MASK:
-            split = "train"  # too small to mask meaningfully
+        # a fixture may pin its own split (e.g. schemaorg/full is train-only
+        # because its edges overlap the schemaorg subtree fixtures)
+        split = fx.get("split") or assign_split(fx["id"])
+        n_maskable = sum(1 for e in fx["graph"]["edges"] if e.get("maskable", True))
+        if split != "train" and n_maskable < MIN_EDGES_TO_MASK:
+            split = "train"  # too few maskable edges to evaluate meaningfully
         splits[fx["id"]] = split
         if split in tasks:
             tasks[split].extend(make_tasks(fx, args.n_distractors))
@@ -165,6 +181,7 @@ def main() -> int:
         "catalogue_sha256": hashlib.sha256(raw).hexdigest(),
         "n_fixtures": len(fixtures),
         "n_skipped": skipped,
+        "extra_sources": extra_counts,
         "split_counts": {s: sum(1 for v in splits.values() if v == s) for s in ("train", "dev", "test")},
         "task_counts": {s: len(t) for s, t in tasks.items()},
         "mask_fraction": MASK_FRACTION,

@@ -55,7 +55,14 @@ flowchart LR
 ### 1 · Sources
 Only material whose license permits redistribution in an open dataset is
 eligible. The source list itself is part of the release — there are no
-undisclosed sources in the base iteration.
+undisclosed sources in the base iteration. Candidate sources under evaluation
+include openly licensed structured vocabularies such as
+[schema.org](https://schema.org) (CC BY-SA) and the ontologies in Microsoft's
+[Ontology-Playground](https://github.com/microsoft/Ontology-Playground)
+catalogue — both already wired into the evaluation testbed
+(`.claude/skills/ontology-testbed/`), which doubles as a proving ground for
+graph-extraction and provenance handling before sources graduate into the
+training dataset.
 
 ### 2 · Provenance gate
 Every candidate source passes a license and provenance check **before** any
