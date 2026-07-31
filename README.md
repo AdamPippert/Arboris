@@ -4,10 +4,10 @@
 open source, open weights, and open data for the base iteration.**
 
 > **Status:** pre-alpha, in active development. The architecture is still taking
-> shape and no trained weights have been released yet. This repository is the
-> source home for the code and data recipes. Trained models, once they exist,
-> are published by Coastal Digital Research on Hugging Face. The diagrams and
-> pipeline documents below describe the **planned design**; see the
+> shape, and no trained weights have been released yet. This repository is the
+> source home for the code and data recipes. Once trained models exist, Coastal
+> Digital Research publishes them on Hugging Face. The diagrams and pipeline
+> documents below describe the **planned design**; see the
 > [status table](#project-status) for what exists today.
 
 ---
@@ -15,23 +15,24 @@ open source, open weights, and open data for the base iteration.**
 ## What is Arboris?
 
 **In plain terms:** most AI systems that try to "understand" an environment
-squeeze everything they see into one big blob of numbers and predict what
-happens next from that blob. Arboris instead keeps track of the *things* in an
-environment and the *relationships between them* — like a map of who is
-connected to what — and it grows new branches of that map only where they help
-it predict the world better, the way a tree grows branches toward light. The
-name comes from *arbor*, Latin for tree.
+squeeze everything they see into one big list of numbers. They predict what
+happens next from that list. Arboris instead tracks the *things* in an
+environment and the *relations* between them, like a map of who is connected
+to what. It grows new branches of that map only where they help it predict the
+world better, the way a tree grows branches toward light. The name comes from
+*arbor*, Latin for tree.
 
 **For researchers:** most world models compress state into a single latent
-vector that rolls forward in time under one predictive objective. Arboris takes
-a different route: it represents state as a typed graph and grows its
-predictive structure *dendritically* — branching along the relations that carry
-predictive signal rather than flattening everything into a monolithic latent.
-The bet is that a branching, graph-native representation captures the
-compositional structure of an environment more faithfully, and degrades more
-gracefully, than a fixed-width latent.
+vector that rolls forward in time under one predictive objective. Arboris
+represents state as a typed graph and grows its predictive structure
+*dendritically*. It branches along the relations that carry predictive signal
+instead of flattening everything into a monolithic latent. The hypothesis is
+that a branching, graph-native representation captures the compositional
+structure of an environment more faithfully, and degrades more gracefully,
+than a fixed-width latent.
 
-This is a research direction, not a finished result. Expect the design to change.
+Arboris is a research direction, not a finished result. Expect the design to
+change.
 
 ```mermaid
 flowchart LR
@@ -50,9 +51,9 @@ flowchart LR
 
 ## Project organization
 
-Everything the project produces lives in one of three public places: this
-repository (code and recipes), the open dataset release, and the open weights
-release on Hugging Face.
+The project publishes everything in three public places: this repository (code
+and recipes), the open dataset release, and the open weights release on
+Hugging Face.
 
 ```mermaid
 flowchart TD
@@ -92,10 +93,10 @@ tests/             pytest suite (PYTHONPATH=src python -m pytest)
 LICENSE, NOTICE    Apache-2.0
 ```
 
-## The two pipelines at a glance
+## The two pipelines
 
-Arboris is organized around two pipelines. Each has its own document with
-detailed diagrams; the short version:
+Arboris has two pipelines. Each pipeline has its own document with detailed
+diagrams; the short version:
 
 ```mermaid
 flowchart LR
@@ -107,20 +108,20 @@ flowchart LR
     W -.->|published with model card| PUB2["Hugging Face"]
 ```
 
-- **[Data ingestion pipeline](docs/data-pipeline.md)** — how raw, openly
-  licensed source material is filtered for provenance, normalized, converted
-  into graph-structured training examples, validated, and published as an open
-  dataset anyone can inspect or rebuild.
-- **[Training pipeline](docs/training-pipeline.md)** — how the open dataset is
-  used to train the model: encoding observations into graph state, predicting
-  forward, growing and pruning dendritic structure, evaluating, and publishing
-  checkpoints as open weights.
+- **[Data ingestion pipeline](docs/data-pipeline.md)** — filters raw, openly
+  licensed source material for provenance, normalizes it, and converts it into
+  graph-structured training examples. It then validates the examples and
+  publishes them as an open dataset anyone can inspect or rebuild.
+- **[Training pipeline](docs/training-pipeline.md)** — trains the model on the
+  open dataset: it encodes observations into graph state, predicts forward,
+  and grows and prunes dendritic structure. It then evaluates checkpoints and
+  publishes them as open weights.
 
 ## Open by design
 
-The base iteration of Arboris is committed to being open on all three axes that
-matter for reproducibility — not just the code. Each axis gets individual
-attention in **[docs/openness.md](docs/openness.md)**.
+The base iteration of Arboris commits to openness on all three axes that
+matter for reproducibility, not just the code. See
+**[docs/openness.md](docs/openness.md)** for detailed coverage of each axis.
 
 | Component | What it means | License / home | Status |
 |---|---|---|---|
@@ -145,7 +146,7 @@ model using only public artifacts.
 
 ## Partnership
 
-Arboris is developed by Adam Pippert as independent research. Coastal Digital
+Adam Pippert develops Arboris as independent research. Coastal Digital
 Research trains and publishes the models on Hugging Face:
 <https://huggingface.co/CoastalDigitalResearch/Arboris>.
 
