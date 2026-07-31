@@ -39,10 +39,10 @@ class MyImpl:
         """
 ```
 
-## Rules of the game
+## Evaluation rules
 
 - Never load `tasks.json` or the dev/test fixtures yourself during `fit` —
-  that's target leakage. The evaluator gives you exactly the training split.
+  doing so is target leakage. The evaluator gives you exactly the training split.
 - Determinism is strongly encouraged (seed everything); the harness itself is
   fully deterministic, so any run-to-run variance is yours.
 - Report `--split test` numbers once per implementation version; iterate on
@@ -60,13 +60,13 @@ objects `arboris` uses internally, call the model's masked-relation scoring
 path, and return the score. Keep the adapter thin: conversion + one forward
 call. If the adapter grows model logic, that logic belongs in the library.
 
-## Baselines to beat
+## Baselines to outperform
 
 | Baseline | What it knows | Typical hits@1 (10 candidates) |
 |---|---|---|
 | `random` | nothing | ~0.10 |
 | `degree` | partial-graph connectivity + train pair prior | well above random |
 
-An implementation that cannot beat `degree` has not learned relational
-structure beyond connectivity. Run both baselines whenever you report numbers
-so results are anchored to the same task set.
+An implementation that cannot outperform `degree` has not learned relational
+structure beyond connectivity. Whenever you report numbers, run both
+baselines so results stay anchored to the same task set.

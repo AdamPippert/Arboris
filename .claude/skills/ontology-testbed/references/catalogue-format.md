@@ -55,7 +55,7 @@ entity types.
 | `relationships[]` | `graph.edges[]` (source, target, relation, cardinality) |
 | entry `id`/`category`/`source` | fixture provenance fields |
 
-Note these are **schema-level** graphs (entity *types* and their relations),
+Catalogue graphs are **schema-level** (entity *types* and their relations),
 not instance data — the testbed evaluates relational-structure inference, not
 instance dynamics. Statistics at the 2026-06-19 snapshot: ~6.7 entity types
 and ~7.3 relationships per ontology (1–28 relationships).
