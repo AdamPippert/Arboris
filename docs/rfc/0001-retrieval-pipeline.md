@@ -4,9 +4,10 @@
 
 ## Summary
 
-Retrieval iteratively constructs the smallest coherent evidence graph. This
-RFC specifies the pipeline stages, the data model, the interface layer, and
-the multi-scale/edge-aware scoring design. Code: `src/arboris/retrieval/`.
+Retrieval iteratively constructs the smallest coherent evidence graph.
+This Request for Comments (RFC) specifies the pipeline stages, the data
+model, the interface layer, and the multi-scale, edge-aware scoring
+design. Code: `src/arboris/retrieval/`.
 
 ## Data model (`types.py`)
 
@@ -21,10 +22,10 @@ the multi-scale/edge-aware scoring design. Code: `src/arboris/retrieval/`.
 | `RetrievalResult` | evidence + trace + per-hypothesis graphs |
 
 `Scale` spans document-shaped corpora (repository → document → paragraph →
-sentence) and code-shaped corpora (repository → file → object → function →
-basic block → statement) plus graph granularities (node, edge, path). One
-enum, so the engine can fuse across scales without special-casing corpus
-type.
+sentence). It also spans code-shaped corpora (repository → file → object →
+function → basic block → statement) and graph granularities (node, edge,
+path). One enum lets the engine fuse across scales without special-casing
+corpus type.
 
 ## Pipeline stages (`engine.py`)
 
@@ -46,13 +47,14 @@ Query
 
 Design rules:
 - Stage 1 never ranks for precision; stage 2 never sees non-candidates.
-- Expansion follows typed edges only through policy — parents, children,
-  ontology links, temporal/causal/semantic neighbors are relation types on
-  the graph, filtered by `ExpansionPolicy`, not hardcoded traversals.
+- Expansion follows typed edges only through policy. Parents, children,
+  ontology links, and temporal/causal/semantic neighbors are relation
+  types on the graph. `ExpansionPolicy` filters them; no traversal is
+  hardcoded.
 - Synchronization happens at merge points only (`asyncio.gather` at recall
   fan-out; `EvidenceMerger` across hypotheses). Everything between is
-  independent — which is what makes distributed and accelerated execution a
-  deployment change rather than a redesign.
+  independent. That independence makes distributed and accelerated
+  execution a deployment change, not a redesign.
 
 ## Interfaces (`interfaces.py`)
 
@@ -62,46 +64,48 @@ Design rules:
 `ExpansionPolicy`, `GraphExpander`, `ConvergencePolicy`,
 `HypothesisManager`, `EvidenceMerger`.
 
-All are structural `Protocol`s: implementations register in `registry.py`
-and are selected by name. Async where I/O or model batching happens
-(retrievers, expanders); sync where computation is local (providers,
-activation, policies). The engine composes protocols and holds no model or
-reasoning logic.
+All are structural `Protocol`s: implementations register in `registry.py`,
+and callers select them by name. Interfaces are async where I/O or model
+batching happens (retrievers, expanders). They are sync where computation
+is local (providers, activation, policies). The engine composes protocols
+and holds no model or reasoning logic.
 
 ### Model agnosticism
 
 The registry is the only place model families appear, as names. Expected
 early adapters: `"denseon"`, `"mdenseon"` (dense recall), `"lateon"`,
-`"mlateon"` (late interaction) — each an optional extra living outside the
-core package, implementing `EmbeddingProvider`/`LateInteractionProvider`.
-The reference `hash`/`hash-late` providers (`providers.py`) implement the
-same protocols deterministically with zero dependencies; they are test
-doubles, not retrievers, and are documented as such.
+`"mlateon"` (late interaction). Each is an optional extra outside the
+core package, implementing
+`EmbeddingProvider`/`LateInteractionProvider`. The reference
+`hash`/`hash-late` providers (`providers.py`) implement the same protocols
+deterministically with zero dependencies. They are test doubles, not
+retrievers, and the documentation says so.
 
 ## Multi-scale and edge-aware scoring
 
 - A `LateInteractionProvider` declares the `Scale`s it serves; multiple
   providers can coexist, one per granularity or one spanning several.
 - Edges are scoreable evidence: they carry text, type, weight, direction,
-  timestamp metadata; `GraphStore.edge_text()` gives providers a scoring
-  view; the reference reranker scores node↔query and edge↔query as separate
-  channels and records both in `Evidence.channels`. `PathScorer` extends the
-  same pattern to paths.
-- Fusion: `Evidence.channels` keeps every scorer's contribution; mergers and
-  downstream consumers can re-weight without re-running retrieval.
+  and timestamp metadata. `GraphStore.edge_text()` gives providers a
+  scoring view. The reference reranker scores node↔query and edge↔query as
+  separate channels and records both in `Evidence.channels`. `PathScorer`
+  extends the same pattern to paths.
+- Fusion: `Evidence.channels` keeps every scorer's contribution; mergers
+  and downstream consumers can re-weight without re-running retrieval.
 
 ## Backwards compatibility
 
 None required (greenfield — see ADR-0001 audit). The public package gains
-`arboris.retrieval`; nothing existing changes. The testbed fixture format is
-the interchange: `InMemoryGraphStore.from_fixture()` accepts it unchanged.
+`arboris.retrieval`; nothing existing changes. The testbed fixture format
+is the interchange: `InMemoryGraphStore.from_fixture()` accepts it
+unchanged.
 
 ## Testing
 
-`tests/test_retrieval_engine.py` runs the full pipeline on testbed fixtures
-(network-free fallback included): evidence-graph shape, trace completeness,
-convergence reporting, hypothesis merge, hint behavior, determinism.
-Policies and activation are unit-tested separately.
+`tests/test_retrieval_engine.py` runs the full pipeline on testbed
+fixtures (network-free fallback included): evidence-graph shape, trace
+completeness, convergence reporting, hypothesis merge, hint behavior,
+determinism. Separate unit tests cover policies and activation.
 
 ## Roadmap
 
