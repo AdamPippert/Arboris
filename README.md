@@ -74,6 +74,9 @@ flowchart TD
 
 ```
 src/arboris/       library code (architecture, training, eval) — WIP scaffold
+  retrieval/           graph-native retrieval subsystem (implemented, reference
+                       stack): evidence-graph pipeline w/ dendritic activation —
+                       see docs/adr/ and docs/rfc/
 .claude/skills/
   ontology-testbed/    benchmark harness: evaluate Arboris implementations on
                        masked-relation prediction over Microsoft's
@@ -83,6 +86,9 @@ docs/              design documents and diagrams
   data-pipeline.md     how raw data becomes the open training dataset
   training-pipeline.md how the open dataset becomes open weights
   openness.md          the open-source / open-weights / open-data commitments
+  adr/                 architecture decision records
+  rfc/                 detailed designs (retrieval pipeline, activation, …)
+tests/             pytest suite (PYTHONPATH=src python -m pytest)
 LICENSE, NOTICE    Apache-2.0
 ```
 

@@ -37,6 +37,7 @@ module.
 flowchart TD
     subgraph arboris["src/arboris/ (planned module layout)"]
         ENC["encoders/<br/>observations → graph state"]
+        RET["retrieval/<br/>sensory cortex: evidence<br/>assembly over the graph"]
         GRAPH["graph/<br/>typed nodes, relations,<br/>graph state container"]
         DEND["dendrite/<br/>growth & pruning of<br/>branch modules"]
         DYN["dynamics/<br/>message passing,<br/>next-state prediction"]
@@ -45,6 +46,8 @@ flowchart TD
         EVAL["eval/<br/>rollout & probe<br/>benchmarks"]
     end
     OBS["Raw observations"] --> ENC --> GRAPH
+    RET -->|evidence graphs| DYN
+    GRAPH --> RET
     GRAPH <--> DYN
     DEND -->|reshapes structure| DYN
     DYN -->|branch utility signal| DEND
@@ -56,6 +59,7 @@ flowchart TD
 | Module | Responsibility | Plain-terms version |
 |---|---|---|
 | `graph/` | Graph state container: typed node and edge sets, attribute tensors, incremental updates | The map itself: the things and their connections |
+| `retrieval/` | **Implemented (reference stack):** graph-native evidence retrieval — dense recall → late interaction → dendritic activation → expansion → convergence; see [ADR-0001](adr/0001-graph-native-retrieval.md), [RFC-0001](rfc/0001-retrieval-pipeline.md), [RFC-0002](rfc/0002-activation-convergence-speculation.md) | The senses: finds and assembles the relevant part of the map before thinking starts |
 | `encoders/` | Turn raw observations into nodes, edges, and attribute updates on the graph | The eyes: what it sees becomes entries on the map |
 | `dynamics/` | Message passing over the graph to predict the next state | The imagination: following connections to guess what happens next |
 | `dendrite/` | Decide where to grow new branch modules and which to prune, from branch utility statistics | The gardener: grows branches that help, trims ones that don't |
